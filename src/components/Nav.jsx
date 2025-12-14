@@ -8,7 +8,7 @@ import { Form, NavLink } from 'react-router-dom'
 import { TrashIcon } from '@heroicons/react/24/solid'
 const Nav = ({userName}) => {
   return (
-    <div>
+    <nav>
         <NavLink
             to="/"
             aria-label="Go to home"
@@ -34,7 +34,7 @@ const Nav = ({userName}) => {
                 </Form>
             )
         }
-    </div>
+    </nav>
   )
 }
 
