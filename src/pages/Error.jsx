@@ -2,7 +2,7 @@ import React from 'react'
 import { useRouteError, Link, useNavigate } from 'react-router-dom'
 
 // Library imports
-import {HomeIcon} from "heroicons/react/24/solid"
+import {HomeIcon} from "@heroicons/react/24/solid"
 import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 const Error = () => {
  const error = useRouteError()
