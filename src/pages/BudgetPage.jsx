@@ -16,7 +16,7 @@ export async function budgetLoader({params}){
         category: "expenses",
         key: "budgetId",
         value: params.id
-    })[0];
+    });
     if(!budget){
         throw new Error("The budget you're trying to find doesn't exist");
     }
@@ -24,7 +24,7 @@ export async function budgetLoader({params}){
 }
 
 // action
-export async function budgetAction(request) {
+export async function budgetAction({request}) {
   const data = await request.formData();
   const {_action, ...values} = Object.fromEntries(data)
 
@@ -45,7 +45,7 @@ export async function budgetAction(request) {
       try {
         deleteItem({
          key: "expenses",
-         id: values.expensesId,
+         id: values.expenseId,
         });
         return toast.success("Expense Deleted!")
       } catch (e) {
@@ -62,8 +62,8 @@ const BudgetPage = () => {
      }}
     >
         <h1 className='h2'>
-            <span className='accent'>{budget.name}</span>
-            Overview
+            <span className='accent'>{budget.name} </span>
+             Overview
         </h1>
         <div className='flex-lg'>
             <BudgetItem budget={budget} showDelete={true}/>

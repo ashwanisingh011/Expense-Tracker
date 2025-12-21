@@ -10,13 +10,13 @@ import { deleteItem, fetchData } from "../helper";
 import { toast } from "react-toastify";
 
 // loader
-export function expensesLoader() {
+export async function expensesLoader() {
   const expenses = fetchData("expenses");
   return { expenses };
 }
 
 // action
-export async function expensesAction(request) {
+export async function expensesAction({request}) {
   const data = await request.formData();
   const {_action, ...values} = Object.fromEntries(data)
 
