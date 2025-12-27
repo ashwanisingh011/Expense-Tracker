@@ -8,7 +8,7 @@ const app = express();
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/budgets', require('./routes/budgets'));
-
+app.use('/api/expense', require('./routes/expense'));
 // Middleware
 app.use(cors());
 app.use(express.json()); // Allows the server to accept JSON data
