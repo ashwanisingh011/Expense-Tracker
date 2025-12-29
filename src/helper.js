@@ -62,13 +62,13 @@ export const fetchExpenses = async () => {
   return response.data;
 };
 
-// Create expenses
+
 export const deleteBudgetApi = async (id) => {
   const response = await api.delete(`/budgets/${id}`);
   return response.data;
 };
 
-// Delete Budget
+
 export const deleteExpenseApi = async (id) => {
   const response = await api.delete(`/expenses/${id}`);
   return response.data;

@@ -3,16 +3,12 @@ import { formatCurrency, formateDateToLocalString, getAllMatchingItems } from '.
 import { Link, useFetcher } from 'react-router-dom';
 import { TrashIcon } from '@heroicons/react/24/solid';
 
-const ExpenseItem = ({expense, showBudget}) => {
+const ExpenseItem = ({expense, budgets = [], showBudget}) => {
   const fetcher = useFetcher();
 
   const { _id, name, amount, createdAt, budgetId} = expense;
 
-  const budget = getAllMatchingItems({
-    category: "budgets",
-    key: "_id",
-    value: expense.budgetId
-  })[0];
+  const budget = budgets.find((b) => b._id === budgetId);
   return (
     <>
         <td>{name}</td>
