@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Budget = require('../models/Budget.js');
+const Expense = require('../models/Expense.js')
 const auth = require('../middleware/auth.js');
 
 

@@ -4,14 +4,14 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+// Middleware
+app.use(cors());
+app.use(express.json()); // Allows the server to accept JSON data
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/budgets', require('./routes/budgets'));
-app.use('/api/expense', require('./routes/expense'));
-// Middleware
-app.use(cors());
-app.use(express.json()); // Allows the server to accept JSON data
+app.use('/api/expenses', require('./routes/expense'));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

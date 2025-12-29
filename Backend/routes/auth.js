@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.js')
 
@@ -8,10 +9,15 @@ router.post('/register', async(req, res)=>{
     const {userName, email, password} = req.body;
 
     try {
+      // Validate input
+      if(!userName || !email || !password) {
+        return res.status(400).json({msg: 'Please provide userName, email, and password'});
+      }
+
       // 1. Check if user already exists
       let user = await User.findOne({email});
       if(user){
-        return res.status(400).json({message: 'User already exists'})
+        return res.status(400).json({msg: 'User already exists'})
       }
       
      // 2. Create new user instance
@@ -36,14 +42,17 @@ router.post('/register', async(req, res)=>{
       process.env.JWT_SECRET,
       {expiresIn: '1h'},
       (err, token) => {
-        if(err) throw err;
-        res.json({ token })
+        if(err) {
+          console.error('JWT signing error:', err);
+          return res.status(500).json({msg: 'Error creating token'});
+        }
+        res.json({ token, userName: user.userName })
       }
      );
 
     }catch(error){
-      console.error(err.message);
-      res.status(500).send('Server Error');
+      console.error('Registration error:', error.message);
+      res.status(500).json({msg: 'Server Error: ' + error.message});
     }
 });
 
