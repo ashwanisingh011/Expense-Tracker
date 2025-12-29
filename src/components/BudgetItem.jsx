@@ -4,8 +4,8 @@ import { calculateSpentByBudget, formatCurrency, formatPercentage } from "../hel
 import { BanknotesIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const BudgetItem = ({ budget, showDelete = false }) => {
-  const { id, name, amount, color } = budget;
-  const spent = calculateSpentByBudget(id);
+  const { _id, name, amount, color } = budget;
+  const spent = calculateSpentByBudget ? calculateSpentByBudget(_id) : 0 ;
 
   return (
     <div

@@ -1,5 +1,5 @@
 // rrd imports
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigation } from "react-router-dom";
 
 // library imports
 import { toast } from "react-toastify";
@@ -12,65 +12,82 @@ import BudgetItem from "../components/BudgetItem";
 import Table from "../components/Table";
 
 //  helper functions
-import { createBudget, createExpense, deleteItem, fetchData, waait } from "../helper"
+import { createBudget, createExpense, deleteExpenseApi, fetchBudgets, fetchExpenses, loginUser,} from "../helper"
 
 // loader
-export function dashboardLoader() {
-  const userName = fetchData("userName");
-  const budgets = fetchData("budgets");
-  const expenses = fetchData("expenses");
-  return { userName, budgets, expenses }
+export async function dashboardLoader() {
+  const userName = JSON.parse(localStorage.getItem("userName"));
+  const token = localStorage.getItem("token");
+// If no token exists, the user isn't logged in, so we show the Intro
+  if(!token) return {userName: null};
+
+  try {
+    // Fetch live data from MongoDB via the helpers we created
+    const budgets = await fetchBudgets();
+    const expenses = await fetchExpenses();
+    return {userName, budgets, expenses};
+  } catch (e) {
+    // If the token is invalid or expired, clear storage to force a re-login
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    return {userName: null};
+  }
 }
 
 // action
 export async function dashboardAction({ request }) {
-  await waait();
 
   const data = await request.formData();
   const { _action, ...values } = Object.fromEntries(data)
 
-  // new user submission
-  if (_action === "newUser") {
+  // 1. Handle Login
+  if (_action === "login") {
     try {
-      localStorage.setItem("userName", JSON.stringify(values.userName))
-      return toast.success(`Welcome, ${values.userName}`)
+      await loginUser(values.email, values.password);
+      return toast.success(`Welcome back!`);
     } catch (e) {
-      throw new Error("There was a problem creating your account.")
+      return toast.error(e.response?.data?.msg || "Invalid credentials.");
     }
   }
-
+// 2. Handle Registration
+  if (_action === "register") {
+    try {
+      await registerUser(values.userName, values.email, values.password);
+      return toast.success(`Account created! Please login.`);
+    } catch (e) {
+      return toast.error(e.response?.data?.msg || "Registration failed.");
+    }
+  }
+// 3. Create Budget
   if (_action === "createBudget") {
     try {
-      createBudget({
+      await createBudget({
         name: values.newBudget,
         amount: values.newBudgetAmount,
-      })
-      return toast.success("Budget created!")
+      });
+      return toast.success("Budget created!");
     } catch (e) {
       throw new Error("There was a problem creating your budget.")
     }
   }
-
+// 4. Create Expense
   if (_action === "createExpense") {
     try {
-      createExpense({
+      await createExpense({
         name: values.newExpense,
         amount: values.newExpenseAmount,
-        budgetId: values.newExpenseBudget
-      })
-      return toast.success(`Expense ${values.newExpense} created!`)
+        budgetId: values.newExpenseBudget,
+      });
+      return toast.success(`Expense ${values.newExpense} created!`);
     } catch (e) {
       throw new Error("There was a problem creating your expense.")
     }
   }
-
+  // 5. Delete Expense
   if (_action === "deleteExpense") {
     try {
-      deleteItem({
-       key: "expenses",
-       id: values.expenseId,
-      });
-      return toast.success("Expense Deleted!")
+      await deleteExpenseApi(values.expensesId);
+      return toast.success("Expense Deleted!");
     } catch (e) {
       throw new Error("There was a problem deleting your expense.")
     }
@@ -79,7 +96,7 @@ export async function dashboardAction({ request }) {
 
 const Dashboard = () => {
   const { userName, budgets, expenses } = useLoaderData()
-
+  const navigation = useNavigation();
   return (
     <>
       {userName ? (
@@ -98,7 +115,7 @@ const Dashboard = () => {
                     <div className="budgets">
                       {
                         budgets.map((budget) => (
-                          <BudgetItem key={budget.id} budget={budget} />
+                          <BudgetItem key={budget._id} budget={budget} />
                         ))
                       }
                     </div>

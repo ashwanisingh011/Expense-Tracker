@@ -6,20 +6,22 @@ import { TrashIcon } from '@heroicons/react/24/solid';
 const ExpenseItem = ({expense, showBudget}) => {
   const fetcher = useFetcher();
 
+  const { _id, name, amount, createdAt, budgetId} = expense;
+
   const budget = getAllMatchingItems({
     category: "budgets",
-    key: "id",
+    key: "_id",
     value: expense.budgetId
   })[0];
   return (
     <>
-        <td>{expense.name}</td>
-        <td>{formatCurrency(expense.amount)}</td>
-        <td>{formateDateToLocalString(expense.createdAt)}</td>
+        <td>{name}</td>
+        <td>{formatCurrency(amount)}</td>
+        <td>{formateDateToLocalString(createdAt)}</td>
         {showBudget && (
            <td>
           <Link 
-            to={`/budget/${budget.id}`}
+            to={`/budget/${budget._id}`}
             style={{
               "--accent": budget.color
             }}
@@ -32,11 +34,11 @@ const ExpenseItem = ({expense, showBudget}) => {
         <td>
           <fetcher.Form method="post">
             <input type="hidden" name='_action' value="deleteExpense" />
-            <input type="hidden" name='expenseId' value={expense.id} />
+            <input type="hidden" name='expenseId' value={_id} />
             <button
               type='submit'
               className='btn btn--warning'
-              aria-label={`Delete ${expense.name} expense`}
+              aria-label={`Delete ${name} expense`}
             >
               <TrashIcon width={20}/>
             </button>

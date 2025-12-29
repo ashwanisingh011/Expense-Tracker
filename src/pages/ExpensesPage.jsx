@@ -6,13 +6,18 @@ import { useLoaderData } from "react-router-dom";
 import Table from "../components/Table";
 
 // helpers
-import { deleteItem, fetchData } from "../helper";
+import { deleteExpenseApi, fetchExpenses } from "../helper";
 import { toast } from "react-toastify";
 
 // loader
 export async function expensesLoader() {
-  const expenses = fetchData("expenses");
-  return { expenses };
+  try {
+    // Fetching all expenses from the backend API
+    const expenses = await fetchExpenses();
+    return {expenses}
+  } catch (e) {
+    throw new Error("Could not load expenses.");
+  }
 }
 
 // action
@@ -23,13 +28,11 @@ export async function expensesAction({request}) {
 
     if (_action === "deleteExpense") {
       try {
-        deleteItem({
-         key: "expenses",
-         id: values.expensesId,
-        });
-        return toast.success("Expense Deleted!")
+        // Calling the backend API to delete the specific expense by its MongoDB _id
+        await deleteExpenseApi(values.expensesId);
+        return toast.success("Expense Deleted");
       } catch (e) {
-        throw new Error("There was a problem deleting your expense.")
+        throw new Error("There was a problem deleting your expense.");
       }
     }
 }

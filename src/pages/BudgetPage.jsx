@@ -1,26 +1,30 @@
 import React from 'react'
 import { useLoaderData } from 'react-router-dom';
-import { createExpense, deleteItem, getAllMatchingItems } from '../helper';
+import { createExpense, deleteBudgetApi, fetchBudgets, fetchExpenses } from '../helper';
 import BudgetItem from '../components/BudgetItem';
 import AddExpenseForm from '../components/AddExpenseForm';
 import Table from '../components/Table';
 import { toast } from 'react-toastify';
 // loader
 export async function budgetLoader({params}){
-    const budget = await getAllMatchingItems({
-        category: "budgets",
-        key: "id",
-        value: params.id
-    })[0];
-    const expenses = await getAllMatchingItems({
-        category: "expenses",
-        key: "budgetId",
-        value: params.id
-    });
+   try {
+    // 1. Fetch all data from the backend
+    const budgets = await fetchBudgets();
+    const expenses = await fetchExpenses();
+    
+    // 2. Find the specific budget by its MongoDB _id (params.id)
+    const budget = budgets.find((b) => b._id === params.id);
+
+    // 3. Filter expenses that belong to this budget
+    const budgetExpenses = expenses.filter((e) => e.budgetId === params.id);
+
     if(!budget){
-        throw new Error("The budget you're trying to find doesn't exist");
+      throw new Error("The budget you are trying to find doesn't exist");
     }
-    return {budget, expenses}
+    return {budget, expenses: budgetExpenses};
+   } catch (e) {
+    throw new Error("There was a problem loading your budget.");
+   }
 }
 
 // action
@@ -30,7 +34,7 @@ export async function budgetAction({request}) {
 
     if (_action === "createExpense") {
     try {
-      createExpense({
+      await createExpense({
        name: values.newExpense,
        amount: values.newExpenseAmount,
        budgetId: values.newExpenseBudget,
@@ -41,15 +45,12 @@ export async function budgetAction({request}) {
     }
   }
 
-    if (_action === "deleteExpense") {
+    if (_action === "deleteBudget") {
       try {
-        deleteItem({
-         key: "expenses",
-         id: values.expenseId,
-        });
-        return toast.success("Expense Deleted!")
+        await deleteBudgetApi(values.budgetId);
+        return toast.success("Budget deleted successfully!");
       } catch (e) {
-        throw new Error("There was a problem deleting your expense.")
+        throw new Error("There was a problem deleting your budget.")
       }
     }
 }
