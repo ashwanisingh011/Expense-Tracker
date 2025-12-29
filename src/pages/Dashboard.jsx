@@ -12,7 +12,7 @@ import BudgetItem from "../components/BudgetItem";
 import Table from "../components/Table";
 
 //  helper functions
-import { createBudget, createExpense, deleteExpenseApi, fetchBudgets, fetchExpenses, loginUser,} from "../helper"
+import { createBudget, createExpense, deleteExpenseApi, fetchBudgets, fetchExpenses, loginUser, registerUser} from "../helper"
 
 // loader
 export async function dashboardLoader() {
