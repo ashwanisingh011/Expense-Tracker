@@ -5,7 +5,7 @@ import logomark from "../assets/logomark.svg"
 import { Form, NavLink } from 'react-router-dom'
 
 // library
-import { TrashIcon } from '@heroicons/react/24/solid'
+import { ArrowRightStartOnRectangleIcon} from '@heroicons/react/24/solid'
 const Nav = ({userName}) => {
   return (
     <nav>
@@ -22,14 +22,14 @@ const Nav = ({userName}) => {
                     method='post'
                     action='/logout'
                     onSubmit={(event)=>{
-                        if(!confirm("Delete user and all data")){
+                        if(!confirm("Press OK to confirm logout.")){
                             event.preventDefault()
                         }
                     }}
                 >
                 <button type='submit' className='btn btn--warning'>
-                    <span>Delete User</span>
-                    <TrashIcon width={20} />
+                    <span>Logout</span>
+                    <ArrowRightStartOnRectangleIcon width={20}/>
                 </button>
                 </Form>
             )

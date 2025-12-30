@@ -19,11 +19,13 @@ export const formatPercentage = (amt) => {
 export const formateDateToLocalString = (epoch) => new Date(epoch).toLocaleDateString();
 
 export const calculateSpentByBudget = (budgetId, expenses = []) => {
+  if(!Array.isArray(expenses)) return 0;
+
   const budgetExpenses = expenses.filter(
-    (expenses) => expenses.budgetId === budgetId 
+    (item) => item.budgetId === budgetId 
   );
-  const amountSpent = budgetExpenses.reduce((acc, expenses) => {
-    return (acc += expenses.amount);
+  const amountSpent = budgetExpenses.reduce((acc, item) => {
+    return acc + item.amount;
   }, 0);
   return amountSpent;
 }
@@ -86,5 +88,9 @@ export const loginUser = async (email, password) => {
 
 export const registerUser = async(userName, email, password) => {
   const response = await api.post('/auth/register', {userName, email, password});
+   if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('userName', JSON.stringify(response.data.userName));
+  }
   return response.data;
 }

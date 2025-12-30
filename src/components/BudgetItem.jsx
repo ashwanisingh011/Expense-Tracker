@@ -1,11 +1,16 @@
 // helper functions
-import { Form, Link } from "react-router-dom";
+import { Form, Link, useLoaderData } from "react-router-dom";
 import { calculateSpentByBudget, formatCurrency, formatPercentage } from "../helper";
 import { BanknotesIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const BudgetItem = ({ budget, showDelete = false }) => {
+
+  const loaderData = useLoaderData();
+
+  const expenses = loaderData?.expenses || [];
+
   const { _id, name, amount, color } = budget;
-  const spent = calculateSpentByBudget ? calculateSpentByBudget(_id) : 0 ;
+  const spent = calculateSpentByBudget(_id, expenses);
 
   return (
     <div

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export async function logoutAction(){
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
-    toast.success("You've deleted your account");
+    toast.success("You have logged out successfully.");
     //return redirect
     return redirect("/")
 }

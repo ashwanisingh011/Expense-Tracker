@@ -53,7 +53,7 @@ export async function dashboardAction({ request }) {
   if (_action === "register") {
     try {
       await registerUser(values.userName, values.email, values.password);
-      return toast.success(`Account created! Please login.`);
+      return toast.success(`Account created Successfully! Welcome, ${values.userName}!`);
     } catch (e) {
       return toast.error(e.response?.data?.msg || "Registration failed.");
     }
@@ -86,7 +86,7 @@ export async function dashboardAction({ request }) {
   // 5. Delete Expense
   if (_action === "deleteExpense") {
     try {
-      await deleteExpenseApi(values.expensesId);
+      await deleteExpenseApi(values.expenseId);
       return toast.success("Expense Deleted!");
     } catch (e) {
       throw new Error("There was a problem deleting your expense.")

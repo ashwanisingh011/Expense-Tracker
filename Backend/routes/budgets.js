@@ -35,7 +35,7 @@ router.post('/', auth, async (req, res)=> {
         res.json(budget)
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({msg: 'Server Error: Could not create budget'});
     }
 })
 

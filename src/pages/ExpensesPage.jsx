@@ -6,15 +6,16 @@ import { useLoaderData } from "react-router-dom";
 import Table from "../components/Table";
 
 // helpers
-import { deleteExpenseApi, fetchExpenses } from "../helper";
+import { deleteExpenseApi, fetchExpenses, fetchBudgets } from "../helper";
 import { toast } from "react-toastify";
 
 // loader
 export async function expensesLoader() {
   try {
-    // Fetching all expenses from the backend API
+    // Fetching all expenses and budgets from the backend API
     const expenses = await fetchExpenses();
-    return {expenses}
+    const budgets = await fetchBudgets();
+    return {expenses, budgets}
   } catch (e) {
     throw new Error("Could not load expenses.");
   }
@@ -29,7 +30,7 @@ export async function expensesAction({request}) {
     if (_action === "deleteExpense") {
       try {
         // Calling the backend API to delete the specific expense by its MongoDB _id
-        await deleteExpenseApi(values.expensesId);
+        await deleteExpenseApi(values.expenseId);
         return toast.success("Expense Deleted");
       } catch (e) {
         throw new Error("There was a problem deleting your expense.");
@@ -38,7 +39,7 @@ export async function expensesAction({request}) {
 }
 
 const ExpensesPage = () => {
-  const { expenses } = useLoaderData();
+  const { expenses, budgets } = useLoaderData();
 
   return (
     <div className="grid-lg">
@@ -48,7 +49,7 @@ const ExpensesPage = () => {
           <h2>
             Recent Expenses <small>({expenses.length} total)</small>
           </h2>
-          <Table expenses={expenses} />
+          <Table expenses={expenses} budgets={budgets} />
         </div>
       ) : (
         <p>No Expenses to show</p>

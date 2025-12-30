@@ -1,20 +1,22 @@
 import React from 'react'
-import { formatCurrency, formateDateToLocalString, getAllMatchingItems } from '../helper'
-import { Link, useFetcher } from 'react-router-dom';
+import { formatCurrency, formateDateToLocalString } from '../helper'
+import { Link, useFetcher, useLoaderData } from 'react-router-dom';
 import { TrashIcon } from '@heroicons/react/24/solid';
 
-const ExpenseItem = ({expense, budgets = [], showBudget}) => {
+const ExpenseItem = ({expense, showBudget}) => {
   const fetcher = useFetcher();
+
+  const { budgets } = useLoaderData();
 
   const { _id, name, amount, createdAt, budgetId} = expense;
 
-  const budget = budgets.find((b) => b._id === budgetId);
+  const budget = budgets?.find((b) => b._id === budgetId);
   return (
     <>
         <td>{name}</td>
         <td>{formatCurrency(amount)}</td>
         <td>{formateDateToLocalString(createdAt)}</td>
-        {showBudget && (
+        {showBudget && budget && (
            <td>
           <Link 
             to={`/budget/${budget._id}`}

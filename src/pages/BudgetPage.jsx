@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLoaderData } from 'react-router-dom';
-import { createExpense, deleteBudgetApi, fetchBudgets, fetchExpenses } from '../helper';
+import { createExpense, deleteBudgetApi, deleteExpenseApi, fetchBudgets, fetchExpenses } from '../helper';
 import BudgetItem from '../components/BudgetItem';
 import AddExpenseForm from '../components/AddExpenseForm';
 import Table from '../components/Table';
@@ -53,6 +53,15 @@ export async function budgetAction({request}) {
         throw new Error("There was a problem deleting your budget.")
       }
     }
+
+    if (_action === "deleteExpense") {
+      try {
+        await deleteExpenseApi(values.expenseId);
+        return toast.success("Expense deleted!");
+      } catch (e) {
+        throw new Error("There was a problem deleting your expense.")
+      }
+    }
 }
 const BudgetPage = () => {
     const {budget, expenses} = useLoaderData();
@@ -74,7 +83,7 @@ const BudgetPage = () => {
             expenses && expenses.length > 0 && (
                 <div className='grid-md'>
                     <h2>
-                        <span className='accent'>{budget.name}</span>
+                        <span className='accent'>{budget.name} </span>
                         Expenses
                     </h2>
                     <Table expenses={expenses} showBudget={false}/>
