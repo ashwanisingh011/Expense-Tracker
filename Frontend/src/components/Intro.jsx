@@ -68,7 +68,7 @@ const Intro = () => {
                     <button
                         type='button'
                         className='btn btn--warning'
-                        style={{padding: "0.2rem 0.6rem", fontSize: "0.8 rem", display: "inline-block"}}
+                        style={{padding: "0.2rem 0.6rem", fontSize: "0.8rem", display: "inline-block"}}
                         onClick={() => setIsLogin(!isLogin)}
                     >
                         {isLogin ? "Register here" : "Login here"}

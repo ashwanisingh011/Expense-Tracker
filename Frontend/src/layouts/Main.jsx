@@ -3,7 +3,7 @@ import React from 'react'
 // helper functions
 // import { fetchData } from '../helper'
 // rrd imports
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData, useLocation } from 'react-router-dom';
 // assets
 import wave from "../assets/wave.svg"
 // components
@@ -22,13 +22,15 @@ export async function mainAction() {
 }
 const Main = () => {
     const {userName} = useLoaderData()
+    const location = useLocation()
+    const isLoginPage = !userName && location.pathname === "/"
   return (
-    <div className='layout'>
+    <div className={`layout ${isLoginPage ? 'layout--login' : ''}`}>
         <Nav userName={userName}/>
         <main>
             <Outlet/>
         </main>
-        <img src={wave} alt="" srcset="" />
+        <img src={wave} alt="" className="wave-img" />
     </div>
   )
 }
